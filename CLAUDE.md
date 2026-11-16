@@ -41,6 +41,8 @@ Runs inside Figma. `code.js` is the plugin main thread handling 30+ commands via
 - **Timeouts**: 30s default per command. Progress updates from the plugin reset the inactivity timer.
 - **Chunking**: Large operations (scanning 100+ nodes) are chunked with progress updates to prevent Figma UI freezing.
 - **Reconnection**: the plugin retries every 2 seconds while its panel is open; the MCP server connects on the next Figma command.
+- **One plugin at a time**: Figma closes this plugin whenever another plugin runs, which drops the bridge; that's Figma's rule, not fixable in code. Relaunch with Run last plugin (Option+Cmd+P); the server waits up to 20 s (`PLUGIN_WAIT_MS` in `server.ts`) for it to reconnect.
+- **Panel**: a 220×36 status strip (dot, status, Connect/Disconnect, 2 px progress bar) using Figma theme colours; hover it for the build version. Port is fixed at 3055 in `ui.html`.
 - **Zod validation**: All tool parameters are validated with Zod schemas.
 
 ## Fork: Local Additions
