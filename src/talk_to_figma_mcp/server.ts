@@ -3072,12 +3072,15 @@ async function ensureRelayConnection(): Promise<void> {
   }
 }
 
-// Fork: the plugin retries every 2 seconds, so give it a moment to arrive
+// Fork: Figma runs one plugin at a time, so running any other plugin closes
+// this one. Wait long enough for the user to relaunch it (Run last plugin,
+// Option+Cmd+P on Mac); it reconnects by itself within 2 seconds.
+const PLUGIN_WAIT_MS = 20000;
 async function waitForPlugin(): Promise<void> {
-  const deadline = Date.now() + 5000;
+  const deadline = Date.now() + PLUGIN_WAIT_MS;
   while (pluginCount === 0) {
     if (Date.now() >= deadline) {
-      throw new Error("The Figma plugin isn't connected. Open LLM Figma MCP in the Figma file you want to work on, then try again.");
+      throw new Error("The Figma plugin isn't connected. Running another Figma plugin closes it: relaunch LLM Figma MCP (Run last plugin, Option+Cmd+P / Ctrl+Alt+P) in the file you want to work on, then try again.");
     }
     await delay(100);
   }

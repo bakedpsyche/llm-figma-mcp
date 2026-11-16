@@ -55,10 +55,11 @@ async function sendProgressUpdate(
 }
 
 // Fork build version: bump on every change to this plugin (shown in the UI header)
-const PLUGIN_VERSION = "0.3.5-prem.6";
+const PLUGIN_VERSION = "0.3.5-prem.7";
 
 // Show UI
-figma.showUI(__html__, { width: 350, height: 600 });
+// Fork: a one-line status strip; themeColors gives the UI Figma's --figma-color-* variables
+figma.showUI(__html__, { width: 220, height: 36, themeColors: true });
 figma.ui.postMessage({ type: "plugin-version", version: PLUGIN_VERSION });
 
 // Plugin commands from UI
@@ -96,10 +97,6 @@ figma.ui.onmessage = async (msg) => {
   }
 };
 
-// Listen for plugin commands from menu
-figma.on("run", ({ command }) => {
-  figma.ui.postMessage({ type: "auto-connect" });
-});
 
 // Update plugin settings
 function updateSettings(settings) {
