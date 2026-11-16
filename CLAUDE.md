@@ -62,9 +62,9 @@ bun scripts/figma.ts bind_variable '{"nodeId":"1:2","variable":"text/on-dark-dis
 
 **Claude Code runs the server from source**, the README's local-development form, so no build step: `claude mcp add -s user TalkToFigma -- bun <workspace>/llm-figma-mcp/src/talk_to_figma_mcp/server.ts`. Server changes load when Claude Code restarts; plugin changes hot-reload in Figma.
 
-**Relay on demand:** the first Figma command starts the relay as its own process if nothing is listening on 3055, then waits up to 5 seconds for the plugin. Sessions that don't use Figma never connect. The relay exits after 10 minutes with no plugin connected (`RELAY_IDLE_MINUTES`, 0 keeps it running). It refuses web pages by Origin: only `null` (Figma plugin UIs) and no Origin (the MCP server, `scripts/figma.ts`) get in. A sandboxed web page also sends `null`, so the idle exit still matters. `bun socket` still starts it by hand.
+**Relay on demand:** the first Figma command starts the relay as its own process if nothing is listening on 3055, waits up to 5 seconds for the relay, then up to 20 seconds for the plugin. Sessions that don't use Figma never connect. The relay exits after 10 minutes with no plugin connected (`RELAY_IDLE_MINUTES`, 0 keeps it running). It refuses web pages by Origin: only `null` (Figma plugin UIs) and no Origin (the MCP server, `scripts/figma.ts`) get in. A sandboxed web page also sends `null`, so the idle exit still matters. `bun socket` still starts it by hand.
 
-**Build version:** `PLUGIN_VERSION` at the top of `code.js` (format `<upstream version>-prem.<n>`) is shown in the plugin panel header and returned by `get_plugin_version`. Bump it on every plugin change, so the running build can be told apart. A panel without a "Build:" line is an upstream or Community build.
+**Build version:** `PLUGIN_VERSION` at the top of `code.js` (format `<upstream version>-prem.<n>`) shows as "Build …" in the panel's hover tooltip and is returned by `get_plugin_version`. Bump it on every plugin change, so the running build can be told apart. An upstream or Community build has the old large panel instead of the status strip.
 
 The plugin running in Figma must be the dev plugin linked from this checkout's `src/llm_figma_plugin/manifest.json`; the Community build answers "Unknown command".
 
